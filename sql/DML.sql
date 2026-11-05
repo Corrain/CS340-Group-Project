@@ -1,11 +1,18 @@
 --Code based on sample DML file from canvas
 
-
-
 -- These are some Database Manipulation queries for a partially implemented Python Database 
 -- using the coffeeshop invnetory and sales management database.
 -- Your submission should contain ALL the queries required to implement ALL the
 -- functionalities listed in the Project Specs.
+
+--These must include:
+
+    --SELECT queries for all tables
+    --INSERT, UPDATE, and DELETE queries for the intersection table
+
+--Variables that will be supplied by your Python code should be clearly marked using placeholder notation of your choice (e.g., @varName), along with SQL comments explaining the convention.
+
+
 
 
 
