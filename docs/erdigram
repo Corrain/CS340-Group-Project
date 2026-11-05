@@ -1,0 +1,75 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table Items {
+  itemID int [pk, increment, unique, not null]
+  itemName varchar [not null, unique]
+  description timestamp
+  unitPrice decimal(10,2)
+  isActive boolean
+}
+
+Table Ingredients {
+  ingredientID integer [primary key]
+  ingredientName varchar [not null, unique]
+  description varchar [null]
+  unit varchar
+  inventoryQty decimal(10,2) [not null]
+  reorderLavel decimal(10,2) [not null]
+  shelfLife int [null]
+}
+
+Table Vendors {
+  vendorID int [increment, unique, not null, primary key]
+  vendorName varchar(100) [ NOT NULL, UNIQUE ]
+  address varchar(255) [ NULL ]
+  phone varchar(20) [ NULL ]
+  contactEmail varchar(100) [ NULL ]
+}
+
+Table Invoices {
+  invoiceID int [ increment, unique, not null, primary key ]
+  vendorID int [ not null ]
+  invoiceDate dateDATE [ not null ]
+  totalCost decimal(10,2) [ not null ]
+}
+
+Table Sales {
+  saleID int [ increment, unique, not null, primary key ]
+  saleDateTime datetime [not null ]
+  totalSaleValue decimal(10,2) [ not null ]
+}
+
+Table SalesItems {
+  saleID int [not null]
+  ItemID int [ not null ]
+  quantity int [NOT NULL ]
+  salePrice decimal(8,2) [ not null ]
+}
+
+Table ItemIngredients {
+  itemID int [ not null ]
+  ingredientID int [ not null ]
+  quantityRequired decimal(10,2) [ not null ]
+}
+
+Table InvoiceIngredients {
+  invoiceID int [ not null ]
+  ingredientID int [ not null ]
+  quantityPurchased decimal(10,2) [ not null ]
+  unitCost decimal(10,2) [ not null ]
+}
+
+Ref: "Invoices"."vendorID" > "Vendors"."vendorID"
+
+Ref: "InvoiceIngredients"."invoiceID" > "Invoices"."invoiceID"
+
+Ref: "Ingredients"."ingredientID" < "InvoiceIngredients"."ingredientID"
+
+Ref: "ItemIngredients"."itemID" > "Items"."itemID"
+
+Ref: "ItemIngredients"."ingredientID" > "Ingredients"."ingredientID"
+
+Ref: "Items"."itemID" < "SalesItems"."ItemID"
+
+Ref: "Sales"."saleID" < "SalesItems"."saleID"
