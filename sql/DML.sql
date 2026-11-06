@@ -1,50 +1,63 @@
---Code based on sample DML file from canvas
+-- CS 340 Group 37 - Data Manipulation Queries (DML)
+-- Team members: Carl Curran and Thien Ngan Nguyen
+-- These match the SQL statements in src/coffeeshop_database.py
+-- Each SELECT returns all records from one of the eight project tables
+-- Python passes user values safely with %s placeholders
+-- In this stand alone MySQL file, @variables demonstrate the same inputs
+-- Run this in the cs340_coffee_shop TEST database after importing DDL.sql
 
--- These are some Database Manipulation queries for a partially implemented Python Database 
--- using the coffeeshop invnetory and sales management database.
--- Your submission should contain ALL the queries required to implement ALL the
--- functionalities listed in the Project Specs.
+-- READ for all eight tables
+SELECT itemID, itemName, description, unitPrice, isActive FROM Items ORDER BY itemID;
 
---These must include:
+SELECT ingredientID, ingredientName, description, unit, inventoryQty,
+       reorderLevel, shelfLifeDays
+FROM Ingredients ORDER BY ingredientID;
 
-    --SELECT queries for all tables
-    --INSERT, UPDATE, and DELETE queries for the intersection table
+SELECT vendorID, vendorName, address, phone, contactEmail
+FROM Vendors ORDER BY vendorID;
 
---Variables that will be supplied by your Python code should be clearly marked using placeholder notation of your choice (e.g., @varName), along with SQL comments explaining the convention.
+SELECT saleID, saleDateTime, totalSaleValue FROM Sales ORDER BY saleID;
 
+SELECT invoiceID, vendorID, invoiceDate, totalCost FROM Invoices ORDER BY invoiceID;
 
---Read/SELECT queries for all tables
---get all vendors
+SELECT saleItemID, saleID, itemID, quantity, salePrice
+FROM SalesItems ORDER BY saleItemID;
 
-SELECT * FROM Vendors;
+SELECT itemIngredientID, itemID, ingredientID, quantityRequired
+FROM ItemIngredients ORDER BY itemIngredientID;
 
---get all ingredients
-SELECT ingredientID, ingredientName, description, unit, inventoryQty FROM Ingredients;
+SELECT invoiceIngredientID, invoiceID, ingredientID, quantityPurchased, unitCost
+FROM InvoiceIngredients ORDER BY invoiceIngredientID;
 
---get all items
-SELECT itemID, itemName, itemDescription, unitPrice, isActive FROM Items;
+-- Only ItemIngredients has CREATE, UPDATE and DELETE in this step
+-- Item 2 (Latte) does not yet have Ingredient 3 (Chocolate Syrup)
+-- These values are for a reversible example, not a permanent recipe change
+SET @itemID = 2;
+SET @ingredientID = 3;
+SET @quantityRequired = 0.03;
 
---get all invoices
-SELECT invoiceID, vendorID, invoiceDate, totalCost FROM Invoices;
+START TRANSACTION;
 
---get all sales
-SELECT saleID, customerID, saleDate, totalAmount FROM Sales;
+-- CREATE one intersection-table row
+INSERT INTO ItemIngredients (itemID, ingredientID, quantityRequired)
+VALUES (@itemID, @ingredientID, @quantityRequired);
 
---get all sale items
-SELECT saleItemID, saleID, itemID, quantity, price FROM SaleItems;
+-- Save the new primary key for the update and delete queries
+SET @itemIngredientID = LAST_INSERT_ID();
+SELECT itemIngredientID, itemID, ingredientID, quantityRequired
+FROM ItemIngredients WHERE itemIngredientID = @itemIngredientID;
 
---get all item ingredients
-SELECT itemID, ingredientID, quantityRequired FROM ItemIngredients;
+-- UPDATE that new row
+SET @quantityRequired = 0.05;
+UPDATE ItemIngredients SET quantityRequired = @quantityRequired
+WHERE itemIngredientID = @itemIngredientID;
+SELECT itemIngredientID, itemID, ingredientID, quantityRequired
+FROM ItemIngredients WHERE itemIngredientID = @itemIngredientID;
 
---get all invoice ingredients
-SELECT invoiceID, ingredientID, quantityPurchased, unitCost FROM InvoiceIngredients;
+-- DELETE that new row
+DELETE FROM ItemIngredients WHERE itemIngredientID = @itemIngredientID;
+SELECT itemIngredientID, itemID, ingredientID, quantityRequired
+FROM ItemIngredients WHERE itemIngredientID = @itemIngredientID;
 
---INSERT, UPDATE, and DELETE queries for the intersection table
---PLACEHOLDER VALUES: @itemID, @ingredientID, @quantityRequired
-SET @itemID = 1;
-SET @ingredientID = 1;
-SET @quantityRequired = 0.09;
-
-INSERT INTO ItemIngredients (itemID, ingredientID, quantityRequired) VALUES (@itemID, @ingredientID, @quantityRequired);
-UPDATE ItemIngredients SET quantityRequired = @quantityRequired WHERE itemID = @itemID AND ingredientID = @ingredientID;
-DELETE FROM ItemIngredients WHERE itemID = @itemID AND ingredientID = @ingredientID;
+-- The demo does not permanently change the imported sample data
+ROLLBACK;
