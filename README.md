@@ -1,72 +1,60 @@
+# CS 340 Group 37 – Coffee Shop Inventory and Sales Management System
 
-<!-- 
-Include a Readme containing: project title, authors, brief description, installation/dependency instructions (e.g., Python libraries, DB import/setup steps), steps to run the application, expected output, and citations that clearly declare originality (including AI tool use, if any)
+Authors: Carl Curran and Thien Ngan Nguyen
 
-    The README is required and should allow another student or the grader to run your application without guessing.
-    Include project title, authors, brief description.
-    Database setup steps and description to run Python code should be clear and complete.
-    Declare originality (e.g. if you adapted material from CS340 @ OSU) and disclose any AI usage in the Acknowledgements section of the README. See Code Citation Tips.
- -->
+This code is aligned to the current Group 37 Step 3 report and its eight-table schema. It uses one Python application 
+class to read all eight tables and add, update or delete relationships in `ItemIngredients`.
 
-# Project Title
-OSU CS340 Group Project Repository
-Simple overview of use/purpose.
+## What changed from the `folderSetup` GitHub branch
 
-## Authors
+- Corrected `itemDescription` to `description` in `Items` and `SaleItems` to `SalesItems`.
+- Included the remaining fields in the Ingredients and intersection table SELECT methods.
+- Updated and deleted `ItemIngredients` by the `itemIngredientID` primary key, as described in the report.
+- Returned `lastrowid` or `rowcount` from the write methods.
+- Added safe rollback and an optional database connection within the class.
+- Replaced the old DDL and DML with the schema, constraints and sample data from the current report.
+- Replaced the unfinished 12-line test example with a driver that calls every required method and checks the results.
 
-Contributors names and contact info
+## Files
 
-Carl Curran  
-[@CarlCurran](curracar@oregonstate.edu)
+- `sql/DDL.sql` – recreates the eight tables and inserts report sample data
+- `sql/DML.sql` – SQL for the eight READs and the three `ItemIngredients` writes
+- `src/coffeeshop_database.py` – the `CoffeeShopDAO` class
+- `tests/database_test.py` – the test/driver program
+- `requirements.txt` – Python dependency
 
-Thien Ngan Nguyan  
-[@ThienNganNguyen](thiennng@oregonstate.edu)
+## Run locally on Mac or VS Code
 
-## Description
+1. Start MySQL or MariaDB and open the extracted project folder in VS Code.
+2. In the integrated Terminal, run `python -m pip install -r requirements.txt`.
+3. Create a **separate test database**:
+   `mysql -h 127.0.0.1 -u root -p -e "CREATE DATABASE IF NOT EXISTS cs340_coffee_shop;"`
+4. Import the sample schema and records:
+   `mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DDL.sql`
+5. Test: `python tests/database_test.py` and enter your database password when prompted.
+6. After it succeeds, capture genuine output for submission:
+   `set -o pipefail; python -u tests/database_test.py 2>&1 | tee CLI_OUT.txt`
 
-An in-depth paragraph about your project and overview of use.
+**Warning:** DDL.sql drops and recreates the eight project tables. Never import it into a database with important data.
 
-## Getting Started
+Expected starting counts: Items 3, Ingredients 3, Vendors 3, Sales 3, Invoices 4, SalesItems 5, ItemIngredients 5 and 
+InvoiceIngredients 5. All tests should end with `ALL REQUIRED METHODS PASSED THIS LOCAL TEST`.
 
-### Dependencies
+The driver adds a temporary Latte/Chocolate Syrup recipe row, updates its quantity, then deletes it. The original 
+records should remain unchanged afterward. It also checks duplicate relationships, nonexistent IDs, foreign keys and the 
+original sale/invoice totals.
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+## Integration with your teammate's repository
 
-### Installing
+Copy `src/coffeeshop_database.py`, `tests/database_test.py`, `sql/DDL.sql` and `sql/DML.sql` into the corresponding 
+folders on the GitHub branch. The class name remains `CoffeeShopDAO` and the existing `CoffeeShopDAO(cursor, conn)` 
+constructor still works. **Update any callers:** `update_item_ingredient(itemIngredientID, quantityRequired)` and 
+`delete_item_ingredient(itemIngredientID)` now use the row's primary key rather than `(itemID, ingredientID)`.
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
-
-* To install all the dependencies listed in an existing requirements.txt file, open your terminal, navigate to the project directory, and run:
-```
-pip install -r requirements.txt
-```
-
-#### Update requirements.txt
-
-* To update the requirements.txt file with the current environment's packages, 
-Ensure you are in the local virtual environment and run in the terminal:
-```
-pip freeze > requirements.txt
-```
-
-### Executing program
-
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+The final ZIP includes the project PDF and the local test output in `CLI_OUT.txt`. Confirm they match the final code and review the AI disclosure before uploading. One teammate should then submit the 
+Ed Discussion URL to Canvas.
 
 ## Acknowledgments
 
-Inspiration, code snippets, etc.
-* [readme-template](https://gist.github.com/DomPizzie/7a5ff55ffa9081f2de27c315f5018afc)
+Our class started from the Group 37 team code and the CS 340 Python CRUD assignment concepts.
+ 
