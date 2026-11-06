@@ -1,5 +1,5 @@
 import mysql.connector
-from db_connector import CoffeeShopQueries
+from coffeeshop_database import CoffeeShopDAO
 
 # replace with your actual DB credentials
 conn = mysql.connector.connect(
@@ -9,4 +9,4 @@ conn = mysql.connector.connect(
     database='cs340_curracar'
 )
 cursor = conn.cursor()
-queries = CoffeeShopQueries(cursor, conn)
+queries = CoffeeShopDAO(cursor, conn)

@@ -22,7 +22,7 @@ SELECT * FROM Vendors;
 SELECT * FROM Ingredients;
 
 --get all items
-SELECT * FROM Items;
+SELECT itemID, itemName, itemDescription, unitPrice, isActive FROM Items;
 
 --get all invoices
 SELECT * FROM Invoices;
