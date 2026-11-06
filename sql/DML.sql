@@ -19,25 +19,25 @@
 SELECT * FROM Vendors;
 
 --get all ingredients
-SELECT * FROM Ingredients;
+SELECT ingredientID, ingredientName, description, unit, inventoryQty FROM Ingredients;
 
 --get all items
 SELECT itemID, itemName, itemDescription, unitPrice, isActive FROM Items;
 
 --get all invoices
-SELECT * FROM Invoices;
+SELECT invoiceID, vendorID, invoiceDate, totalCost FROM Invoices;
 
 --get all sales
-SELECT * FROM Sales;
+SELECT saleID, customerID, saleDate, totalAmount FROM Sales;
 
 --get all sale items
-SELECT * FROM SaleItems;
+SELECT saleItemID, saleID, itemID, quantity, price FROM SaleItems;
 
 --get all item ingredients
-SELECT * FROM ItemIngredients;
+SELECT itemID, ingredientID, quantityRequired FROM ItemIngredients;
 
 --get all invoice ingredients
-SELECT * FROM InvoiceIngredients;   
+SELECT invoiceID, ingredientID, quantityPurchased, unitCost FROM InvoiceIngredients;
 
 --INSERT, UPDATE, and DELETE queries for the intersection table
 --PLACEHOLDER VALUES: @itemID, @ingredientID, @quantityRequired
@@ -45,6 +45,6 @@ SET @itemID = 1;
 SET @ingredientID = 1;
 SET @quantityRequired = 0.09;
 
-INSERT INTO `ItemIngredients` (`itemID`, `ingredientID`, `quantityRequired`) VALUES (@itemID, @ingredientID, @quantityRequired);
-UPDATE `ItemIngredients` SET `quantityRequired` = @quantityRequired WHERE `itemID` = @itemID AND `ingredientID` = @ingredientID;
-DELETE FROM `ItemIngredients` WHERE `itemID` = @itemID AND `ingredientID` = @ingredientID;
+INSERT INTO ItemIngredients (itemID, ingredientID, quantityRequired) VALUES (@itemID, @ingredientID, @quantityRequired);
+UPDATE ItemIngredients SET quantityRequired = @quantityRequired WHERE itemID = @itemID AND ingredientID = @ingredientID;
+DELETE FROM ItemIngredients WHERE itemID = @itemID AND ingredientID = @ingredientID;
