@@ -40,6 +40,10 @@ SELECT * FROM ItemIngredients;
 SELECT * FROM InvoiceIngredients;   
 
 --INSERT, UPDATE, and DELETE queries for the intersection table
+--PLACEHOLDER VALUES: @itemID, @ingredientID, @quantityRequired
+SET @itemID = 1;
+SET @ingredientID = 1;
+SET @quantityRequired = 0.09;
 
 INSERT INTO `ItemIngredients` (`itemID`, `ingredientID`, `quantityRequired`) VALUES (@itemID, @ingredientID, @quantityRequired);
 UPDATE `ItemIngredients` SET `quantityRequired` = @quantityRequired WHERE `itemID` = @itemID AND `ingredientID` = @ingredientID;
