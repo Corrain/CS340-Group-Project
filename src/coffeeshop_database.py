@@ -4,7 +4,6 @@ Based on the group's starter code.
 """
 
 import mysql.connector
-from mysql.connector.constants import ClientFlag
 
 class CoffeeShopDAO(object):
     """run the coffee shop queries through a Python class"""
@@ -15,8 +14,7 @@ class CoffeeShopDAO(object):
         self.owns_connection = cursor is None
         if self.owns_connection:
             self.connection = mysql.connector.connect(
-                host=host, user=user, password=password, database=database,
-                client_flags=[ClientFlag.FOUND_ROWS]
+                host=host, user=user, password=password, database=database
             )
             self.cursor = self.connection.cursor(dictionary=True)
         else:
