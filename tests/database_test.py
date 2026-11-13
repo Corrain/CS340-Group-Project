@@ -35,6 +35,10 @@ def show_and_check(name, rows):
     assert len(rows) == expected, f"{name}: expected {expected} rows, got {len(rows)}"
     print("PASS:", name, "has", expected, "rows")
 
+def check_number_of_rows(dao, label):
+    rows = dao.get_all_item_ingredients()
+    print(f"\nItemIngredients number of entries after {label}: ({len(rows)} rows)")
+
 
 def check_totals(dao):
     # Calculate totals using the rows returned by the class methods
@@ -99,17 +103,20 @@ def main():
             rows = [r for r in dao.get_all_item_ingredients() if r["itemIngredientID"] == new_id]
             assert len(rows) == 1 and (rows[0]["itemID"], rows[0]["ingredientID"]) == (2, 3)
             print("New item ingredient row:", rows[0])
+            check_number_of_rows(dao, "CREATE")
             print("PASS CREATE: new itemIngredientID =", new_id)
 
             count = dao.update_item_ingredient(new_id, Decimal("0.05"))
             rows = [r for r in dao.get_all_item_ingredients() if r["itemIngredientID"] == new_id]
             assert count == 1 and rows[0]["quantityRequired"] == Decimal("0.05")
             print("Updated item ingredient row:", rows[0])
+            check_number_of_rows(dao, "UPDATE")
             print("PASS UPDATE: quantityRequired =", rows[0]["quantityRequired"])
 
             count = dao.delete_item_ingredient(new_id)
             assert count == 1
             new_id = None
+            check_number_of_rows(dao, "DELETE")
             print("PASS DELETE: temporary relationship was removed")
         finally:
             # Clean up if an earlier check failed after the insert

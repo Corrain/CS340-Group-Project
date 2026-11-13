@@ -82,10 +82,20 @@ The script calls all eight SELECT methods and prints the records from each table
 DELETE methods for `ItemIngredients`.
 
 To save the command-line output in `CLI_OUT.txt`, run:
-set -o pipefail
-python -u tests/database_test.py 2>&1 | tee CLI_OUT.txt
+
+`set -o pipefail && python -u tests/database_test.py 2>&1 | tee CLI_OUT.txt`
+
 or if the folder is unzipped:
-python -u database_test.py 2>&1 | tee CLI_OUT.txt
+    
+`set -o pipefail && python -u database_test.py 2>&1 | tee CLI_OUT.txt`
+
+If on Windows, run:
+
+`python -u tests\database_test.py 2>&1 | Tee-Object -FilePath CLI_OUT.txt`
+
+or if the folder is unzipped:
+
+`python -u database_test.py 2>&1 | Tee-Object -FilePath CLI_OUT.txt`
 
 ### Expected Output
 The original sample data should contain:

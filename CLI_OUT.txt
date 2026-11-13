@@ -2,58 +2,58 @@ CS 340 Group 37 - Coffee Shop Step 3 Test
 Testing the eight READ methods
 
 Items (3 rows)
-(1, 'Espresso', 'Double espresso', Decimal('3.00'), 1)
-(2, 'Latte', 'Espresso with steamed milk', Decimal('4.50'), 1)
-(3, 'Hot Chocolate', None, Decimal('4.00'), 1)
+{'itemID': 1, 'itemName': 'Espresso', 'description': 'Double espresso', 'unitPrice': Decimal('3.00'), 'isActive': 1}
+{'itemID': 2, 'itemName': 'Latte', 'description': 'Espresso with steamed milk', 'unitPrice': Decimal('4.50'), 'isActive': 1}
+{'itemID': 3, 'itemName': 'Hot Chocolate', 'description': None, 'unitPrice': Decimal('4.00'), 'isActive': 1}
 PASS: Items has 3 rows
 
 Ingredients (3 rows)
-(1, 'Espresso Beans', None, 'kg', Decimal('4.50'), Decimal('1.00'), 90)
-(2, 'Whole Milk', 'Refrigerated dairy milk', 'L', Decimal('12.00'), Decimal('4.00'), 7)
-(3, 'Chocolate Syrup', None, 'L', Decimal('2.00'), Decimal('0.50'), 180)
+{'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'description': None, 'unit': 'kg', 'inventoryQty': Decimal('4.50'), 'reorderLevel': Decimal('1.00'), 'shelfLifeDays': 90}
+{'ingredientID': 2, 'ingredientName': 'Whole Milk', 'description': 'Refrigerated dairy milk', 'unit': 'L', 'inventoryQty': Decimal('12.00'), 'reorderLevel': Decimal('4.00'), 'shelfLifeDays': 7}
+{'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'description': None, 'unit': 'L', 'inventoryQty': Decimal('2.00'), 'reorderLevel': Decimal('0.50'), 'shelfLifeDays': 180}
 PASS: Ingredients has 3 rows
 
 Vendors (3 rows)
-(1, 'Cascadia Cafe Supply', '100 Market Way, Corvallis, OR', '541-555-0131', 'orders@cascadia.example')
-(2, 'Cocoa Pantry Wholesale', '250 Depot Rd, Albany, OR', '541-555-0132', 'orders@cocoa.example')
-(3, 'Willamette Dairy Co.', None, '541-555-0133', 'orders@dairy.example')
+{'vendorID': 1, 'vendorName': 'Cascadia Cafe Supply', 'address': '100 Market Way, Corvallis, OR', 'phone': '541-555-0131', 'contactEmail': 'orders@cascadia.example.com'}
+{'vendorID': 2, 'vendorName': 'Cocoa Pantry Wholesale', 'address': '250 Depot Rd, Albany, OR', 'phone': '541-555-0132', 'contactEmail': 'orders@cocoa.example.com'}
+{'vendorID': 3, 'vendorName': 'Willamette Dairy Co.', 'address': None, 'phone': '541-555-0133', 'contactEmail': 'orders@dairy.example.com'}
 PASS: Vendors has 3 rows
 
 Sales (3 rows)
-(1, datetime.datetime(2026, 10, 23, 9, 15), Decimal('12.00'))
-(2, datetime.datetime(2026, 10, 23, 10, 5), Decimal('4.50'))
-(3, datetime.datetime(2026, 10, 24, 11, 30), Decimal('7.00'))
+{'saleID': 1, 'saleDateTime': datetime.datetime(2026, 10, 23, 9, 15), 'totalSaleValue': Decimal('12.00')}
+{'saleID': 2, 'saleDateTime': datetime.datetime(2026, 10, 23, 10, 5), 'totalSaleValue': Decimal('4.50')}
+{'saleID': 3, 'saleDateTime': datetime.datetime(2026, 10, 24, 11, 30), 'totalSaleValue': Decimal('7.00')}
 PASS: Sales has 3 rows
 
 Invoices (4 rows)
-(1, 1, datetime.date(2026, 10, 19), Decimal('73.00'))
-(2, 1, datetime.date(2026, 10, 20), Decimal('37.50'))
-(3, 2, datetime.date(2026, 10, 21), Decimal('30.00'))
-(4, 3, datetime.date(2026, 10, 22), Decimal('19.20'))
+{'invoiceID': 1, 'vendorID': 1, 'invoiceDate': datetime.date(2026, 10, 19), 'totalCost': Decimal('73.00')}
+{'invoiceID': 2, 'vendorID': 1, 'invoiceDate': datetime.date(2026, 10, 20), 'totalCost': Decimal('37.50')}
+{'invoiceID': 3, 'vendorID': 2, 'invoiceDate': datetime.date(2026, 10, 21), 'totalCost': Decimal('30.00')}
+{'invoiceID': 4, 'vendorID': 3, 'invoiceDate': datetime.date(2026, 10, 22), 'totalCost': Decimal('19.20')}
 PASS: Invoices has 4 rows
 
 SalesItems (5 rows)
-(1, 1, 2, 2, Decimal('4.50'))
-(2, 1, 1, 1, Decimal('3.00'))
-(3, 2, 2, 1, Decimal('4.50'))
-(4, 3, 3, 1, Decimal('4.00'))
-(5, 3, 1, 1, Decimal('3.00'))
+{'saleItemID': 1, 'saleID': 1, 'itemID': 2, 'itemName': 'Latte', 'quantity': 2, 'salePrice': Decimal('4.50')}
+{'saleItemID': 2, 'saleID': 1, 'itemID': 1, 'itemName': 'Espresso', 'quantity': 1, 'salePrice': Decimal('3.00')}
+{'saleItemID': 3, 'saleID': 2, 'itemID': 2, 'itemName': 'Latte', 'quantity': 1, 'salePrice': Decimal('4.50')}
+{'saleItemID': 4, 'saleID': 3, 'itemID': 3, 'itemName': 'Hot Chocolate', 'quantity': 1, 'salePrice': Decimal('4.00')}
+{'saleItemID': 5, 'saleID': 3, 'itemID': 1, 'itemName': 'Espresso', 'quantity': 1, 'salePrice': Decimal('3.00')}
 PASS: SalesItems has 5 rows
 
 ItemIngredients (5 rows)
-(1, 1, 1, Decimal('0.02'))
-(2, 2, 1, Decimal('0.02'))
-(3, 2, 2, Decimal('0.24'))
-(4, 3, 2, Decimal('0.25'))
-(5, 3, 3, Decimal('0.03'))
+{'itemIngredientID': 1, 'itemID': 1, 'itemName': 'Espresso', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 2, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 3, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.24')}
+{'itemIngredientID': 4, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.25')}
+{'itemIngredientID': 5, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
 PASS: ItemIngredients has 5 rows
 
 InvoiceIngredients (5 rows)
-(1, 1, 1, Decimal('2.00'), Decimal('24.00'))
-(2, 1, 2, Decimal('10.00'), Decimal('2.50'))
-(3, 2, 1, Decimal('1.50'), Decimal('25.00'))
-(4, 3, 3, Decimal('3.00'), Decimal('10.00'))
-(5, 4, 2, Decimal('8.00'), Decimal('2.40'))
+{'invoiceIngredientID': 1, 'invoiceID': 1, 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'quantityPurchased': Decimal('2.00'), 'unitCost': Decimal('24.00')}
+{'invoiceIngredientID': 2, 'invoiceID': 1, 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'quantityPurchased': Decimal('10.00'), 'unitCost': Decimal('2.50')}
+{'invoiceIngredientID': 3, 'invoiceID': 2, 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'quantityPurchased': Decimal('1.50'), 'unitCost': Decimal('25.00')}
+{'invoiceIngredientID': 4, 'invoiceID': 3, 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'quantityPurchased': Decimal('3.00'), 'unitCost': Decimal('10.00')}
+{'invoiceIngredientID': 5, 'invoiceID': 4, 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'quantityPurchased': Decimal('8.00'), 'unitCost': Decimal('2.40')}
 PASS: InvoiceIngredients has 5 rows
 
 PASS: All eight READ methods worked
@@ -62,14 +62,22 @@ Checking the sale and invoice totals
 PASS: Sale 1 total = 12.00
 PASS: Sale 2 total = 4.50
 PASS: Sale 3 total = 7.00
-PASS: Invoice 1 total = 73.00
-PASS: Invoice 2 total = 37.50
-PASS: Invoice 3 total = 30.00
-PASS: Invoice 4 total = 19.20
+PASS: Invoice 1 totalCost = 73.00
+PASS: Invoice 2 totalCost = 37.50
+PASS: Invoice 3 totalCost = 30.00
+PASS: Invoice 4 totalCost = 19.20
 
 Testing CREATE, UPDATE, DELETE on ItemIngredients
-PASS CREATE: new itemIngredientID = 9
+New item ingredient row: {'itemIngredientID': 6, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
+
+ItemIngredients number of entries after CREATE: (6 rows)
+PASS CREATE: new itemIngredientID = 6
+Updated item ingredient row: {'itemIngredientID': 6, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.05')}
+
+ItemIngredients number of entries after UPDATE: (6 rows)
 PASS UPDATE: quantityRequired = 0.05
+
+ItemIngredients number of entries after DELETE: (5 rows)
 PASS DELETE: temporary relationship was removed
 PASS: Original recipe records are restored
 PASS: Nonexistent primary keys affect 0 rows

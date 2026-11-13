@@ -4,7 +4,7 @@ Based on the group's starter code.
 """
 
 import mysql.connector
-
+from mysql.connector.constants import ClientFlag
 
 class CoffeeShopDAO(object):
     """run the coffee shop queries through a Python class"""
@@ -15,7 +15,8 @@ class CoffeeShopDAO(object):
         self.owns_connection = cursor is None
         if self.owns_connection:
             self.connection = mysql.connector.connect(
-                host=host, user=user, password=password, database=database
+                host=host, user=user, password=password, database=database,
+                client_flags=[ClientFlag.FOUND_ROWS]
             )
             self.cursor = self.connection.cursor(dictionary=True)
         else:
@@ -77,23 +78,32 @@ class CoffeeShopDAO(object):
     def get_all_sale_items(self):
         # The table is called SalesItems, with an s
         '''Get all rows from the SalesItems table.'''
-        query = """SELECT saleItemID, saleID, itemID, quantity, salePrice
-                   FROM SalesItems ORDER BY saleItemID"""
+        query = """SELECT si.saleItemID, si.saleID, si.itemID, i.itemName,
+                          si.quantity, si.salePrice
+                   FROM SalesItems AS si
+                   JOIN Items AS i ON si.itemID = i.itemID
+                   ORDER BY si.saleItemID"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_item_ingredients(self):
         '''Get all rows from the ItemIngredients table.'''
-        query = """SELECT itemIngredientID, itemID, ingredientID, quantityRequired
-                   FROM ItemIngredients ORDER BY itemIngredientID"""
+        query = """SELECT ii.itemIngredientID, ii.itemID, i.itemName, ii.ingredientID,
+                          ing.ingredientName, ing.unit, ii.quantityRequired
+                   FROM ItemIngredients AS ii
+                   JOIN Items AS i ON ii.itemID = i.itemID
+                   JOIN Ingredients AS ing ON ii.ingredientID = ing.ingredientID
+                   ORDER BY ii.itemIngredientID"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_invoice_ingredients(self):
         '''Get all rows from the InvoiceIngredients table.'''
-        query = """SELECT invoiceIngredientID, invoiceID, ingredientID,
-                          quantityPurchased, unitCost
-                   FROM InvoiceIngredients ORDER BY invoiceIngredientID"""
+        query = """SELECT ii.invoiceIngredientID, ii.invoiceID, ii.ingredientID,
+                          ing.ingredientName, ii.quantityPurchased, ii.unitCost
+                   FROM InvoiceIngredients AS ii
+                   JOIN Ingredients AS ing ON ii.ingredientID = ing.ingredientID
+                   ORDER BY ii.invoiceIngredientID"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 

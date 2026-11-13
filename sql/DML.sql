@@ -20,14 +20,23 @@ SELECT saleID, saleDateTime, totalSaleValue FROM Sales ORDER BY saleID;
 
 SELECT invoiceID, vendorID, invoiceDate, totalCost FROM Invoices ORDER BY invoiceID;
 
-SELECT saleItemID, saleID, itemID, quantity, salePrice
-FROM SalesItems ORDER BY saleItemID;
+SELECT si.saleItemID, si.saleID, si.itemID, i.itemName, si.quantity, si.salePrice
+FROM SalesItems AS si
+JOIN Items AS i ON si.itemID = i.itemID
+ORDER BY si.saleItemID;
 
-SELECT itemIngredientID, itemID, ingredientID, quantityRequired
-FROM ItemIngredients ORDER BY itemIngredientID;
+SELECT ii.itemIngredientID, ii.itemID, i.itemName, ii.ingredientID,
+       ing.ingredientName, ing.unit, ii.quantityRequired
+FROM ItemIngredients AS ii
+JOIN Items AS i ON ii.itemID = i.itemID
+JOIN Ingredients AS ing ON ii.ingredientID = ing.ingredientID
+ORDER BY ii.itemIngredientID;
 
-SELECT invoiceIngredientID, invoiceID, ingredientID, quantityPurchased, unitCost
-FROM InvoiceIngredients ORDER BY invoiceIngredientID;
+SELECT ii.invoiceIngredientID, ii.invoiceID, ii.ingredientID,
+       ing.ingredientName, ii.quantityPurchased, ii.unitCost
+FROM InvoiceIngredients AS ii
+JOIN Ingredients AS ing ON ii.ingredientID = ing.ingredientID
+ORDER BY ii.invoiceIngredientID;
 
 -- Only ItemIngredients has CREATE, UPDATE and DELETE in this step
 -- Item 2 (Latte) does not yet have Ingredient 3 (Chocolate Syrup)

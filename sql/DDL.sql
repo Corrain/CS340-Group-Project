@@ -84,6 +84,7 @@ CREATE TABLE ItemIngredients (
     itemID INT NOT NULL,
     ingredientID INT NOT NULL,
     quantityRequired DECIMAL(10,2) NOT NULL,
+    CHECK (quantityRequired > 0),
     PRIMARY KEY (itemIngredientID),
     UNIQUE (itemID, ingredientID),
     FOREIGN KEY (itemID) REFERENCES Items(itemID)
