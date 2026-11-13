@@ -38,7 +38,8 @@ def show_and_check(name, rows):
 def check_number_of_rows(dao, label):
     rows = dao.get_all_item_ingredients()
     print(f"\nItemIngredients number of entries after {label}: ({len(rows)} rows)")
-
+    for row in rows:
+        print(row)
 
 def check_totals(dao):
     # Calculate totals using the rows returned by the class methods

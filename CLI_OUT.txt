@@ -71,13 +71,30 @@ Testing CREATE, UPDATE, DELETE on ItemIngredients
 New item ingredient row: {'itemIngredientID': 6, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
 
 ItemIngredients number of entries after CREATE: (6 rows)
+{'itemIngredientID': 1, 'itemID': 1, 'itemName': 'Espresso', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 2, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 3, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.24')}
+{'itemIngredientID': 4, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.25')}
+{'itemIngredientID': 5, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
+{'itemIngredientID': 6, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
 PASS CREATE: new itemIngredientID = 6
 Updated item ingredient row: {'itemIngredientID': 6, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.05')}
 
 ItemIngredients number of entries after UPDATE: (6 rows)
+{'itemIngredientID': 1, 'itemID': 1, 'itemName': 'Espresso', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 2, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 3, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.24')}
+{'itemIngredientID': 4, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.25')}
+{'itemIngredientID': 5, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
+{'itemIngredientID': 6, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.05')}
 PASS UPDATE: quantityRequired = 0.05
 
 ItemIngredients number of entries after DELETE: (5 rows)
+{'itemIngredientID': 1, 'itemID': 1, 'itemName': 'Espresso', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 2, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 1, 'ingredientName': 'Espresso Beans', 'unit': 'kg', 'quantityRequired': Decimal('0.02')}
+{'itemIngredientID': 3, 'itemID': 2, 'itemName': 'Latte', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.24')}
+{'itemIngredientID': 4, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 2, 'ingredientName': 'Whole Milk', 'unit': 'L', 'quantityRequired': Decimal('0.25')}
+{'itemIngredientID': 5, 'itemID': 3, 'itemName': 'Hot Chocolate', 'ingredientID': 3, 'ingredientName': 'Chocolate Syrup', 'unit': 'L', 'quantityRequired': Decimal('0.03')}
 PASS DELETE: temporary relationship was removed
 PASS: Original recipe records are restored
 PASS: Nonexistent primary keys affect 0 rows
