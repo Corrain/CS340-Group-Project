@@ -39,18 +39,23 @@ def show_and_check(name, rows):
 def check_totals(dao):
     # Calculate totals using the rows returned by the class methods
     sale_totals = {}
-    for sale_item_id, sale_id, item_id, quantity, price in dao.get_all_sale_items():
-        sale_totals[sale_id] = sale_totals.get(sale_id, Decimal("0")) + quantity * price
-    for sale_id, date, total in dao.get_all_sales():
+
+    for r in dao.get_all_sale_items():
+        sale_id = r["saleID"]
+        sale_totals[sale_id] = sale_totals.get(sale_id, Decimal("0")) + r["quantity"] * r["salePrice"]
+    for r in dao.get_all_sales():
+        sale_id, date, total = r["saleID"], r["saleDateTime"], r["totalSaleValue"]
         assert sale_totals[sale_id] == total, f"Sale {sale_id} total does not match"
         print("PASS: Sale", sale_id, "total =", total)
 
     invoice_totals = {}
-    for line_id, invoice_id, ingredient_id, qty, price in dao.get_all_invoice_ingredients():
-        invoice_totals[invoice_id] = invoice_totals.get(invoice_id, Decimal("0")) + qty * price
-    for invoice_id, vendor_id, date, total in dao.get_all_invoices():
+    for r in dao.get_all_invoice_ingredients():
+        invoice_id = r["invoiceID"]
+        invoice_totals[invoice_id] = invoice_totals.get(invoice_id, Decimal("0")) + r["quantityPurchased"] * r["unitCost"]
+    for r in dao.get_all_invoices():
+        invoice_id, vendor_id, date, total = r["invoiceID"], r["vendorID"], r["invoiceDate"], r["totalCost"]
         assert invoice_totals[invoice_id] == total, f"Invoice {invoice_id} total does not match"
-        print("PASS: Invoice", invoice_id, "total =", total)
+        print("PASS: Invoice", invoice_id, "totalCost =", total)
 
 
 def main():
@@ -80,7 +85,7 @@ def main():
 
         # The sample has no Latte + Chocolate Syrup relationship yet
         original = dao.get_all_item_ingredients()
-        assert not any(row[1] == 2 and row[2] == 3 for row in original), (
+        assert not any(row["itemID"] == 2 and row["ingredientID"] == 3 for row in original), (
             "Latte + Chocolate Syrup already exists. Re-import the test DDL first."
         )
 
@@ -91,14 +96,16 @@ def main():
         new_id = None
         try:
             new_id = dao.add_item_ingredient(2, 3, Decimal("0.03"))
-            rows = [r for r in dao.get_all_item_ingredients() if r[0] == new_id]
-            assert len(rows) == 1 and rows[0][1:3] == (2, 3)
+            rows = [r for r in dao.get_all_item_ingredients() if r["itemIngredientID"] == new_id]
+            assert len(rows) == 1 and (rows[0]["itemID"], rows[0]["ingredientID"]) == (2, 3)
+            print("New item ingredient row:", rows[0])
             print("PASS CREATE: new itemIngredientID =", new_id)
 
             count = dao.update_item_ingredient(new_id, Decimal("0.05"))
-            rows = [r for r in dao.get_all_item_ingredients() if r[0] == new_id]
-            assert count == 1 and rows[0][3] == Decimal("0.05")
-            print("PASS UPDATE: quantityRequired =", rows[0][3])
+            rows = [r for r in dao.get_all_item_ingredients() if r["itemIngredientID"] == new_id]
+            assert count == 1 and rows[0]["quantityRequired"] == Decimal("0.05")
+            print("Updated item ingredient row:", rows[0])
+            print("PASS UPDATE: quantityRequired =", rows[0]["quantityRequired"])
 
             count = dao.delete_item_ingredient(new_id)
             assert count == 1

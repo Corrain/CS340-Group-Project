@@ -106,7 +106,7 @@ CREATE TABLE InvoiceIngredients (
         ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- Sample data below matches the Step 2 PDF tables.
+-- Sample data below matches the Step 3 PDF tables.
 START TRANSACTION;
 INSERT INTO Items (itemID, itemName, description, unitPrice, isActive) VALUES
     (1, 'Espresso', 'Double espresso', 3.00, 1),
@@ -119,9 +119,9 @@ INSERT INTO Ingredients (ingredientID, ingredientName, description, unit, invent
     (3, 'Chocolate Syrup', NULL, 'L', 2.00, 0.50, 180);
 
 INSERT INTO Vendors (vendorID, vendorName, address, phone, contactEmail) VALUES
-    (1, 'Cascadia Cafe Supply', '100 Market Way, Corvallis, OR', '541-555-0131', 'orders@cascadia.example'),
-    (2, 'Cocoa Pantry Wholesale', '250 Depot Rd, Albany, OR', '541-555-0132', 'orders@cocoa.example'),
-    (3, 'Willamette Dairy Co.', NULL, '541-555-0133', 'orders@dairy.example');
+    (1, 'Cascadia Cafe Supply', '100 Market Way, Corvallis, OR', '541-555-0131', 'orders@cascadia.example.com'),
+    (2, 'Cocoa Pantry Wholesale', '250 Depot Rd, Albany, OR', '541-555-0132', 'orders@cocoa.example.com'),
+    (3, 'Willamette Dairy Co.', NULL, '541-555-0133', 'orders@dairy.example.com');
 
 INSERT INTO Sales (saleID, saleDateTime, totalSaleValue) VALUES
     (1, '2026-10-23 09:15:00', 12.00),

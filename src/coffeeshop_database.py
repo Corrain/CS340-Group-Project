@@ -17,20 +17,23 @@ class CoffeeShopDAO(object):
             self.connection = mysql.connector.connect(
                 host=host, user=user, password=password, database=database
             )
-            self.cursor = self.connection.cursor()
+            self.cursor = self.connection.cursor(dictionary=True)
         else:
             self.cursor = cursor
             self.connection = connection
 
     def _commit(self):
+        '''Commit the current transaction if a connection is available.'''
         if self.connection is not None:
             self.connection.commit()
 
     def _rollback(self):
+        '''Roll back the current transaction if a connection is available.'''
         if self.connection is not None:
             self.connection.rollback()
 
     def close(self):
+        '''Close the cursor and connection if this class opened them.'''
         # Only close the connection if this class opened it
         if self.owns_connection:
             self.cursor.close()
@@ -38,11 +41,13 @@ class CoffeeShopDAO(object):
 
     # READ: Get all rows from each of our eight tables
     def get_all_items(self):
+        '''Get all rows from the Items table.'''
         query = "SELECT itemID, itemName, description, unitPrice, isActive FROM Items ORDER BY itemID"
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_ingredients(self):
+        '''Get all rows from the Ingredients table.'''
         query = """SELECT ingredientID, ingredientName, description, unit,
                           inventoryQty, reorderLevel, shelfLifeDays
                    FROM Ingredients ORDER BY ingredientID"""
@@ -50,17 +55,20 @@ class CoffeeShopDAO(object):
         return self.cursor.fetchall()
 
     def get_all_vendors(self):
+        '''Get all rows from the Vendors table.'''
         query = """SELECT vendorID, vendorName, address, phone, contactEmail
                    FROM Vendors ORDER BY vendorID"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_sales(self):
+        '''Get all rows from the Sales table.'''
         query = "SELECT saleID, saleDateTime, totalSaleValue FROM Sales ORDER BY saleID"
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_invoices(self):
+        '''Get all rows from the Invoices table.'''
         query = """SELECT invoiceID, vendorID, invoiceDate, totalCost
                    FROM Invoices ORDER BY invoiceID"""
         self.cursor.execute(query)
@@ -68,18 +76,21 @@ class CoffeeShopDAO(object):
 
     def get_all_sale_items(self):
         # The table is called SalesItems, with an s
+        '''Get all rows from the SalesItems table.'''
         query = """SELECT saleItemID, saleID, itemID, quantity, salePrice
                    FROM SalesItems ORDER BY saleItemID"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_item_ingredients(self):
+        '''Get all rows from the ItemIngredients table.'''
         query = """SELECT itemIngredientID, itemID, ingredientID, quantityRequired
                    FROM ItemIngredients ORDER BY itemIngredientID"""
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_all_invoice_ingredients(self):
+        '''Get all rows from the InvoiceIngredients table.'''
         query = """SELECT invoiceIngredientID, invoiceID, ingredientID,
                           quantityPurchased, unitCost
                    FROM InvoiceIngredients ORDER BY invoiceIngredientID"""
@@ -88,6 +99,7 @@ class CoffeeShopDAO(object):
 
     # CREATE: Add an ingredient relationship for one menu item
     def add_item_ingredient(self, itemID, ingredientID, quantityRequired):
+        '''Add an ingredient relationship for one menu item.'''
         query = """INSERT INTO ItemIngredients (itemID, ingredientID, quantityRequired)
                    VALUES (%s, %s, %s)"""
         try:
@@ -101,6 +113,7 @@ class CoffeeShopDAO(object):
 
     # UPDATE: Change one recipe row using its primary key
     def update_item_ingredient(self, itemIngredientID, quantityRequired):
+        '''Update the required quantity for one recipe row.'''
         query = """UPDATE ItemIngredients SET quantityRequired = %s
                    WHERE itemIngredientID = %s"""
         try:
@@ -114,6 +127,7 @@ class CoffeeShopDAO(object):
 
     # DELETE: Remove one recipe row using its primary key
     def delete_item_ingredient(self, itemIngredientID):
+        '''Delete one recipe row using its primary key.'''
         query = "DELETE FROM ItemIngredients WHERE itemIngredientID = %s"
         try:
             self.cursor.execute(query, (itemIngredientID,))
