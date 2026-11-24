@@ -1,4 +1,6 @@
--- CS 340 Group 37 - PL/SQL Procedures for Coffee Shop Inventory and Sales Management System)
+-- CS 340 Project Step 4 DRAFT - Group 37 
+
+-- PL/SQL Procedures for Coffee Shop Inventory and Sales Management System
 -- Team members: Carl Curran and Thien Ngan Nguyen
 -- These match the SQL statements in src/coffeeshop_database.py
 
@@ -93,11 +95,14 @@ DELIMITER //
 CREATE PROCEDURE sp_AddItemIngredient(
     IN p_itemID INT,
     IN p_ingredientID INT,
-    IN p_quantityRequired DECIMAL(10, 2)
+    IN p_quantityRequired DECIMAL(10, 2),
+    OUT p_id INT
 )
 BEGIN
     INSERT INTO ItemIngredients (itemID, ingredientID, quantityRequired)
     VALUES (p_itemID, p_ingredientID, p_quantityRequired);
+    -- SELECT LAST_INSERT_ID() INTO p_id;
+    SET p_id = LAST_INSERT_ID();
 END //
 DELIMITER ;
 
@@ -113,7 +118,7 @@ BEGIN
     SET quantityRequired = p_quantityRequired
     WHERE itemIngredientID = p_itemIngredientID;
 END //
-DELIMITER;
+DELIMITER ;
 
 -- Delete a specific row
 DROP PROCEDURE IF EXISTS sp_DeleteItemIngredient;
@@ -124,4 +129,4 @@ CREATE PROCEDURE sp_DeleteItemIngredient(
 BEGIN
     DELETE FROM ItemIngredients WHERE itemIngredientID = p_itemIngredientID;
 END //
-DELIMITER;
+DELIMITER ;

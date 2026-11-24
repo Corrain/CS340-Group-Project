@@ -32,7 +32,7 @@ def show_and_check(name, rows):
     print("\n" + name + " (" + str(len(rows)) + " rows)")
     for row in rows:
         print(row)
-    assert len(rows) == expected, f"{name}: expected {expected} rows, got {len(rows)}"
+    assert len(rows) == expected, f"ERROR {name}: expected {expected} rows, got {len(rows)}"
     print("PASS:", name, "has", expected, "rows")
 
 def check_number_of_rows(dao, label):
@@ -75,16 +75,27 @@ def main():
         database=os.environ.get("CS340_DB_NAME", "cs340_coffee_shop"),
     )
 
+    dao.reset_database()
+    print("Database restored to initial state")
+
     try:
-        print("CS 340 Group 37 - Coffee Shop Step 3 Test")
+        print("CS 340 Group 37 - Coffee Shop Step 4 Test")
+        
         print("Testing the eight READ methods")
         show_and_check("Items", dao.get_all_items())
+        print("Items checked")
         show_and_check("Ingredients", dao.get_all_ingredients())
+        print("Ingredients checked")
         show_and_check("Vendors", dao.get_all_vendors())
+        print("Vendors checked")
         show_and_check("Sales", dao.get_all_sales())
+        print("Sales checked")
         show_and_check("Invoices", dao.get_all_invoices())
+        print("Invoices checked")
         show_and_check("SalesItems", dao.get_all_sale_items())
+        print("SalesItems checked")
         show_and_check("ItemIngredients", dao.get_all_item_ingredients())
+        print("ItemIngredients checked")
         show_and_check("InvoiceIngredients", dao.get_all_invoice_ingredients())
         print("\nPASS: All eight READ methods worked")
 
@@ -125,7 +136,7 @@ def main():
                 dao.delete_item_ingredient(new_id)
 
         assert dao.get_all_item_ingredients() == original
-        print("PASS: Original recipe records are restored")
+        print("PASS: Original recipe records are restored after DELETE")
 
         assert dao.update_item_ingredient(99999, Decimal("0.25")) == 0
         assert dao.delete_item_ingredient(99999) == 0
@@ -143,7 +154,29 @@ def main():
         except mysql.connector.IntegrityError:
             print("PASS: Invalid foreign key was rejected")
 
+        try:
+            dao.add_item_ingredient(1, 1, Decimal("0.0"))
+            raise AssertionError("Aadded quantiry 0 of an item")
+        except mysql.connector.IntegrityError:
+            print("PASS: Quantity of 0 was rejected")
+
+        try:
+            dao.add_item_ingredient(1, 1, Decimal("-0.01"))
+            raise AssertionError("Aadded negative quantity of an item")
+        except mysql.connector.IntegrityError:
+            print("PASS: Negative quantity was rejected")
+
         assert dao.get_all_item_ingredients() == original
+
+        # demonastrate database reset by adding two new relationships, then restoring the database to its original state
+        print("\nDemonstrating database reset")
+        check_number_of_rows(dao, "BEFORE adding two new relationships")
+        dao.add_item_ingredient(2, 3, Decimal("0.03"))
+        dao.add_item_ingredient(1, 3, Decimal("0.03"))
+        check_number_of_rows(dao, "BEFORE RESET")
+        dao.reset_database()
+        check_number_of_rows(dao, "AFTER RESET")
+
         print("\nALL REQUIRED METHODS PASSED THIS LOCAL TEST")
     finally:
         dao.close()

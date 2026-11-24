@@ -1,7 +1,7 @@
--- CS 340 Project Step 3 FINAL - Group 37 
+-- CS 340 Project Step 4 DRAFT - Group 37 
 -- Coffee Shop Inventory and Sales Management System 
 -- Team members: Carl Curran and Thien Ngan Nguyen 
--- Sample data matches our Group 37 Step 3 report 
+-- Sample data matches our Group 37 Step 4 report 
 -- WARNING: This script deletes and recreates these eight tables 
 -- Run only inside a separate project TEST database 
  
@@ -116,7 +116,7 @@ BEGIN
             ON DELETE RESTRICT ON UPDATE CASCADE 
     ) ENGINE=InnoDB; 
     
-    -- Sample data below matches the Step 3 PDF tables. 
+    -- Sample data below matches the PDF tables. 
     START TRANSACTION; 
     INSERT INTO Items (itemID, itemName, description, unitPrice, isActive) VALUES 
         (1, 'Espresso', 'Double espresso', 3.00, 1), 
@@ -176,12 +176,3 @@ BEGIN
     END //
 DELIMITER ;
  
-
--- -- These read-only checks help compare the headers with their detail rows. 
--- SELECT s.saleID, s.totalSaleValue, SUM(si.quantity * si.salePrice) AS calculatedTotal 
--- FROM Sales AS s INNER JOIN SalesItems AS si ON s.saleID = si.saleID 
--- GROUP BY s.saleID, s.totalSaleValue ORDER BY s.saleID; 
- 
--- SELECT i.invoiceID, i.totalCost, SUM(ii.quantityPurchased * ii.unitCost) AS calculatedTotal 
--- FROM Invoices AS i INNER JOIN InvoiceIngredients AS ii ON i.invoiceID = ii.invoiceID 
--- GROUP BY i.invoiceID, i.totalCost ORDER BY i.invoiceID; 

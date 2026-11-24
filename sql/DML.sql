@@ -1,6 +1,8 @@
--- CS 340 Group 37 - Data Manipulation Queries (DML)
+-- CS 340 Project Step 4 DRAFT - Group 37 
+
+-- Data Manipulation Queries (DML)
 -- Team members: Carl Curran and Thien Ngan Nguyen
--- These match the SQL statements in src/coffeeshop_database.py
+
 -- Each SELECT returns all records from one of the eight project tables
 -- Python passes user values safely with %s placeholders
 -- In this stand alone MySQL file, @variables demonstrate the same inputs
