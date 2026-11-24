@@ -1,5 +1,7 @@
 """CS 340 Group 37 - test our database application class.
 We should run these against our own MySQL test database before submitting the project.
+
+This code is our own work
 """
 
 import getpass

@@ -8,6 +8,8 @@
 -- In this stand alone MySQL file, @variables demonstrate the same inputs
 -- Run this in the cs340_coffee_shop TEST database after importing DDL.sql
 
+-- This code is our own work.
+
 -- READ for all eight tables
 SELECT itemID, itemName, description, unitPrice, isActive FROM Items ORDER BY itemID;
 

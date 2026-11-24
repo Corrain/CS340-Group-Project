@@ -1,6 +1,8 @@
 """CS 340 Group 37 - Coffee Shop database class.
 Team members: Carl Curran and Thien Ngan Nguyen
 Based on the group's starter code.
+
+This code is our own work.
 """
 
 import mysql.connector

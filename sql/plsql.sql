@@ -7,6 +7,8 @@
 -- Each read procedure returns all records from one of the eight project tables
 -- Python passes user values safely with %s placeholders
 
+-- This code is our own work.
+
 -- READ for all eight tables
 DROP PROCEDURE IF EXISTS sp_ReadAllItems;
 DELIMITER //

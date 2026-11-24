@@ -4,6 +4,8 @@
 -- Sample data matches our Group 37 Step 4 report 
 -- WARNING: This script deletes and recreates these eight tables 
 -- Run only inside a separate project TEST database 
+
+-- This code is our own work.
  
 
  -- ###
