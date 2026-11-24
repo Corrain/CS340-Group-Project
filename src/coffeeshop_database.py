@@ -1,10 +1,11 @@
 """CS 340 Group 37 - Coffee Shop database class.
 Team members: Carl Curran and Thien Ngan Nguyen
 Based on the group's starter code.
+
+This code is our own work.
 """
 
 import mysql.connector
-
 
 class CoffeeShopDAO(object):
     """run the coffee shop queries through a Python class"""
@@ -17,20 +18,23 @@ class CoffeeShopDAO(object):
             self.connection = mysql.connector.connect(
                 host=host, user=user, password=password, database=database
             )
-            self.cursor = self.connection.cursor()
+            self.cursor = self.connection.cursor(dictionary=True)
         else:
             self.cursor = cursor
             self.connection = connection
 
     def _commit(self):
+        '''Commit the current transaction if a connection is available.'''
         if self.connection is not None:
             self.connection.commit()
 
     def _rollback(self):
+        '''Roll back the current transaction if a connection is available.'''
         if self.connection is not None:
             self.connection.rollback()
 
     def close(self):
+        '''Close the cursor and connection if this class opened them.'''
         # Only close the connection if this class opened it
         if self.owns_connection:
             self.cursor.close()
@@ -38,62 +42,87 @@ class CoffeeShopDAO(object):
 
     # READ: Get all rows from each of our eight tables
     def get_all_items(self):
-        query = "SELECT itemID, itemName, description, unitPrice, isActive FROM Items ORDER BY itemID"
+        '''Get all rows from the Items table.'''
+        query = "CALL sp_ReadAllItems()"
+        # "SELECT itemID, itemName, description, unitPrice, isActive FROM Items ORDER BY itemID"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_ingredients(self):
-        query = """SELECT ingredientID, ingredientName, description, unit,
-                          inventoryQty, reorderLevel, shelfLifeDays
-                   FROM Ingredients ORDER BY ingredientID"""
+        '''Get all rows from the Ingredients table.'''
+        query = "CALL sp_ReadAllIngredients()"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_vendors(self):
-        query = """SELECT vendorID, vendorName, address, phone, contactEmail
-                   FROM Vendors ORDER BY vendorID"""
+        '''Get all rows from the Vendors table.'''
+        query = "CALL sp_ReadAllVendors()"
+        # """SELECT vendorID, vendorName, address, phone, contactEmail
+        #            FROM Vendors ORDER BY vendorID"""
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_sales(self):
-        query = "SELECT saleID, saleDateTime, totalSaleValue FROM Sales ORDER BY saleID"
+        '''Get all rows from the Sales table.'''
+        query = "CALL sp_ReadAllSales()"
+        # "SELECT saleID, saleDateTime, totalSaleValue FROM Sales ORDER BY saleID"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_invoices(self):
-        query = """SELECT invoiceID, vendorID, invoiceDate, totalCost
-                   FROM Invoices ORDER BY invoiceID"""
+        '''Get all rows from the Invoices table.'''
+        query = "CALL sp_ReadAllInvoices()"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_sale_items(self):
         # The table is called SalesItems, with an s
-        query = """SELECT saleItemID, saleID, itemID, quantity, salePrice
-                   FROM SalesItems ORDER BY saleItemID"""
+        '''Get all rows from the SalesItems table.'''
+        query = "CALL sp_ReadAllSalesItems()"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_item_ingredients(self):
-        query = """SELECT itemIngredientID, itemID, ingredientID, quantityRequired
-                   FROM ItemIngredients ORDER BY itemIngredientID"""
+        '''Get all rows from the ItemIngredients table.'''
+        query = "CALL sp_ReadAllItemIngredients()"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     def get_all_invoice_ingredients(self):
-        query = """SELECT invoiceIngredientID, invoiceID, ingredientID,
-                          quantityPurchased, unitCost
-                   FROM InvoiceIngredients ORDER BY invoiceIngredientID"""
+        '''Get all rows from the InvoiceIngredients table.'''
+        query = "CALL sp_ReadAllInvoiceIngredients()"
         self.cursor.execute(query)
-        return self.cursor.fetchall()
+        rows = self.cursor.fetchall()
+        self.cursor.nextset()
+        return rows
 
     # CREATE: Add an ingredient relationship for one menu item
     def add_item_ingredient(self, itemID, ingredientID, quantityRequired):
-        query = """INSERT INTO ItemIngredients (itemID, ingredientID, quantityRequired)
-                   VALUES (%s, %s, %s)"""
+        '''Add an ingredient relationship for one menu item.'''
+        query = "CALL sp_AddItemIngredient(%s, %s, %s, @new_id)"
         try:
             self.cursor.execute(query, (itemID, ingredientID, quantityRequired))
-            new_id = self.cursor.lastrowid
+            while self.cursor.nextset():
+                pass
+            # new_id = self.cursor.lastrowid
+            self.cursor.execute("SELECT @new_id AS newID")
+            new_id = self.cursor.fetchone()["newID"]
             self._commit()
+            # self.close()
             return new_id
         except mysql.connector.Error:
             self._rollback()
@@ -101,10 +130,11 @@ class CoffeeShopDAO(object):
 
     # UPDATE: Change one recipe row using its primary key
     def update_item_ingredient(self, itemIngredientID, quantityRequired):
-        query = """UPDATE ItemIngredients SET quantityRequired = %s
-                   WHERE itemIngredientID = %s"""
+        '''Update the required quantity for one recipe row.'''
+        query = "CALL sp_UpdateItemIngredient(%s, %s)"
         try:
-            self.cursor.execute(query, (quantityRequired, itemIngredientID))
+            self.cursor.execute(query, (itemIngredientID, quantityRequired))
+            # self.cursor.nextset()
             changed = self.cursor.rowcount
             self._commit()
             return changed
@@ -114,12 +144,31 @@ class CoffeeShopDAO(object):
 
     # DELETE: Remove one recipe row using its primary key
     def delete_item_ingredient(self, itemIngredientID):
-        query = "DELETE FROM ItemIngredients WHERE itemIngredientID = %s"
+        '''Delete one recipe row using its primary key.'''
+        query = "CALL sp_DeleteItemIngredient(%s)"
+        # """DELETE FROM ItemIngredients WHERE itemIngredientID = %s"""
         try:
             self.cursor.execute(query, (itemIngredientID,))
+            # self.cursor.nextset()
             changed = self.cursor.rowcount
+            # self.close()
             self._commit()
             return changed
+        except mysql.connector.Error:
+            self._rollback()
+            raise
+
+    # REST DB: Restore the database to its original state
+    def reset_database(self):
+        '''Restore the database to its original state.'''
+        query = "CALL sp_ResetDB()"
+        try:
+            self.cursor.execute(query)
+            while self.cursor.nextset():
+                pass
+            self._commit()
+            # self.close()
+            return True
         except mysql.connector.Error:
             self._rollback()
             raise

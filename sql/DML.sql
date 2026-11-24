@@ -1,10 +1,14 @@
--- CS 340 Group 37 - Data Manipulation Queries (DML)
+-- CS 340 Project Step 4 DRAFT - Group 37 
+
+-- Data Manipulation Queries (DML)
 -- Team members: Carl Curran and Thien Ngan Nguyen
--- These match the SQL statements in src/coffeeshop_database.py
+
 -- Each SELECT returns all records from one of the eight project tables
 -- Python passes user values safely with %s placeholders
 -- In this stand alone MySQL file, @variables demonstrate the same inputs
 -- Run this in the cs340_coffee_shop TEST database after importing DDL.sql
+
+-- This code is our own work.
 
 -- READ for all eight tables
 SELECT itemID, itemName, description, unitPrice, isActive FROM Items ORDER BY itemID;
@@ -20,14 +24,23 @@ SELECT saleID, saleDateTime, totalSaleValue FROM Sales ORDER BY saleID;
 
 SELECT invoiceID, vendorID, invoiceDate, totalCost FROM Invoices ORDER BY invoiceID;
 
-SELECT saleItemID, saleID, itemID, quantity, salePrice
-FROM SalesItems ORDER BY saleItemID;
+SELECT si.saleItemID, si.saleID, si.itemID, i.itemName, si.quantity, si.salePrice
+FROM SalesItems AS si
+JOIN Items AS i ON si.itemID = i.itemID
+ORDER BY si.saleItemID;
 
-SELECT itemIngredientID, itemID, ingredientID, quantityRequired
-FROM ItemIngredients ORDER BY itemIngredientID;
+SELECT ii.itemIngredientID, ii.itemID, i.itemName, ii.ingredientID,
+       ing.ingredientName, ing.unit, ii.quantityRequired
+FROM ItemIngredients AS ii
+JOIN Items AS i ON ii.itemID = i.itemID
+JOIN Ingredients AS ing ON ii.ingredientID = ing.ingredientID
+ORDER BY ii.itemIngredientID;
 
-SELECT invoiceIngredientID, invoiceID, ingredientID, quantityPurchased, unitCost
-FROM InvoiceIngredients ORDER BY invoiceIngredientID;
+SELECT ii.invoiceIngredientID, ii.invoiceID, ii.ingredientID,
+       ing.ingredientName, ii.quantityPurchased, ii.unitCost
+FROM InvoiceIngredients AS ii
+JOIN Ingredients AS ing ON ii.ingredientID = ing.ingredientID
+ORDER BY ii.invoiceIngredientID;
 
 -- Only ItemIngredients has CREATE, UPDATE and DELETE in this step
 -- Item 2 (Latte) does not yet have Ingredient 3 (Chocolate Syrup)

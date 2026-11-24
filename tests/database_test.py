@@ -1,5 +1,7 @@
 """CS 340 Group 37 - test our database application class.
 We should run these against our own MySQL test database before submitting the project.
+
+This code is our own work
 """
 
 import getpass
@@ -32,25 +34,35 @@ def show_and_check(name, rows):
     print("\n" + name + " (" + str(len(rows)) + " rows)")
     for row in rows:
         print(row)
-    assert len(rows) == expected, f"{name}: expected {expected} rows, got {len(rows)}"
+    assert len(rows) == expected, f"ERROR {name}: expected {expected} rows, got {len(rows)}"
     print("PASS:", name, "has", expected, "rows")
 
+def check_number_of_rows(dao, label):
+    rows = dao.get_all_item_ingredients()
+    print(f"\nItemIngredients number of entries after {label}: ({len(rows)} rows)")
+    for row in rows:
+        print(row)
 
 def check_totals(dao):
     # Calculate totals using the rows returned by the class methods
     sale_totals = {}
-    for sale_item_id, sale_id, item_id, quantity, price in dao.get_all_sale_items():
-        sale_totals[sale_id] = sale_totals.get(sale_id, Decimal("0")) + quantity * price
-    for sale_id, date, total in dao.get_all_sales():
+
+    for r in dao.get_all_sale_items():
+        sale_id = r["saleID"]
+        sale_totals[sale_id] = sale_totals.get(sale_id, Decimal("0")) + r["quantity"] * r["salePrice"]
+    for r in dao.get_all_sales():
+        sale_id, date, total = r["saleID"], r["saleDateTime"], r["totalSaleValue"]
         assert sale_totals[sale_id] == total, f"Sale {sale_id} total does not match"
         print("PASS: Sale", sale_id, "total =", total)
 
     invoice_totals = {}
-    for line_id, invoice_id, ingredient_id, qty, price in dao.get_all_invoice_ingredients():
-        invoice_totals[invoice_id] = invoice_totals.get(invoice_id, Decimal("0")) + qty * price
-    for invoice_id, vendor_id, date, total in dao.get_all_invoices():
+    for r in dao.get_all_invoice_ingredients():
+        invoice_id = r["invoiceID"]
+        invoice_totals[invoice_id] = invoice_totals.get(invoice_id, Decimal("0")) + r["quantityPurchased"] * r["unitCost"]
+    for r in dao.get_all_invoices():
+        invoice_id, vendor_id, date, total = r["invoiceID"], r["vendorID"], r["invoiceDate"], r["totalCost"]
         assert invoice_totals[invoice_id] == total, f"Invoice {invoice_id} total does not match"
-        print("PASS: Invoice", invoice_id, "total =", total)
+        print("PASS: Invoice", invoice_id, "totalCost =", total)
 
 
 def main():
@@ -65,22 +77,33 @@ def main():
         database=os.environ.get("CS340_DB_NAME", "cs340_coffee_shop"),
     )
 
+    dao.reset_database()
+    print("Database restored to initial state")
+
     try:
-        print("CS 340 Group 37 - Coffee Shop Step 3 Test")
+        print("CS 340 Group 37 - Coffee Shop Step 4 Test")
+        
         print("Testing the eight READ methods")
         show_and_check("Items", dao.get_all_items())
+        print("Items checked")
         show_and_check("Ingredients", dao.get_all_ingredients())
+        print("Ingredients checked")
         show_and_check("Vendors", dao.get_all_vendors())
+        print("Vendors checked")
         show_and_check("Sales", dao.get_all_sales())
+        print("Sales checked")
         show_and_check("Invoices", dao.get_all_invoices())
+        print("Invoices checked")
         show_and_check("SalesItems", dao.get_all_sale_items())
+        print("SalesItems checked")
         show_and_check("ItemIngredients", dao.get_all_item_ingredients())
+        print("ItemIngredients checked")
         show_and_check("InvoiceIngredients", dao.get_all_invoice_ingredients())
         print("\nPASS: All eight READ methods worked")
 
         # The sample has no Latte + Chocolate Syrup relationship yet
         original = dao.get_all_item_ingredients()
-        assert not any(row[1] == 2 and row[2] == 3 for row in original), (
+        assert not any(row["itemID"] == 2 and row["ingredientID"] == 3 for row in original), (
             "Latte + Chocolate Syrup already exists. Re-import the test DDL first."
         )
 
@@ -91,18 +114,23 @@ def main():
         new_id = None
         try:
             new_id = dao.add_item_ingredient(2, 3, Decimal("0.03"))
-            rows = [r for r in dao.get_all_item_ingredients() if r[0] == new_id]
-            assert len(rows) == 1 and rows[0][1:3] == (2, 3)
+            rows = [r for r in dao.get_all_item_ingredients() if r["itemIngredientID"] == new_id]
+            assert len(rows) == 1 and (rows[0]["itemID"], rows[0]["ingredientID"]) == (2, 3)
+            print("New item ingredient row:", rows[0])
+            check_number_of_rows(dao, "CREATE")
             print("PASS CREATE: new itemIngredientID =", new_id)
 
             count = dao.update_item_ingredient(new_id, Decimal("0.05"))
-            rows = [r for r in dao.get_all_item_ingredients() if r[0] == new_id]
-            assert count == 1 and rows[0][3] == Decimal("0.05")
-            print("PASS UPDATE: quantityRequired =", rows[0][3])
+            rows = [r for r in dao.get_all_item_ingredients() if r["itemIngredientID"] == new_id]
+            assert count == 1 and rows[0]["quantityRequired"] == Decimal("0.05")
+            print("Updated item ingredient row:", rows[0])
+            check_number_of_rows(dao, "UPDATE")
+            print("PASS UPDATE: quantityRequired =", rows[0]["quantityRequired"])
 
             count = dao.delete_item_ingredient(new_id)
             assert count == 1
             new_id = None
+            check_number_of_rows(dao, "DELETE")
             print("PASS DELETE: temporary relationship was removed")
         finally:
             # Clean up if an earlier check failed after the insert
@@ -110,7 +138,7 @@ def main():
                 dao.delete_item_ingredient(new_id)
 
         assert dao.get_all_item_ingredients() == original
-        print("PASS: Original recipe records are restored")
+        print("PASS: Original recipe records are restored after DELETE")
 
         assert dao.update_item_ingredient(99999, Decimal("0.25")) == 0
         assert dao.delete_item_ingredient(99999) == 0
@@ -128,7 +156,29 @@ def main():
         except mysql.connector.IntegrityError:
             print("PASS: Invalid foreign key was rejected")
 
+        try:
+            dao.add_item_ingredient(1, 1, Decimal("0.0"))
+            raise AssertionError("Aadded quantiry 0 of an item")
+        except mysql.connector.IntegrityError:
+            print("PASS: Quantity of 0 was rejected")
+
+        try:
+            dao.add_item_ingredient(1, 1, Decimal("-0.01"))
+            raise AssertionError("Aadded negative quantity of an item")
+        except mysql.connector.IntegrityError:
+            print("PASS: Negative quantity was rejected")
+
         assert dao.get_all_item_ingredients() == original
+
+        # demonastrate database reset by adding two new relationships, then restoring the database to its original state
+        print("\nDemonstrating database reset")
+        check_number_of_rows(dao, "BEFORE adding two new relationships")
+        dao.add_item_ingredient(2, 3, Decimal("0.03"))
+        dao.add_item_ingredient(1, 3, Decimal("0.03"))
+        check_number_of_rows(dao, "BEFORE RESET")
+        dao.reset_database()
+        check_number_of_rows(dao, "AFTER RESET")
+
         print("\nALL REQUIRED METHODS PASSED THIS LOCAL TEST")
     finally:
         dao.close()
