@@ -4,7 +4,7 @@ Carl Curran and Thien Ngan Nguyen
 ## Project Description
 The Coffee Shop Inventory and Sales Management System uses a Python class to interact with a database that helps a small 
 coffee shop manage item sales, ingredients, inventory purchases and vendor information in one place.
-For Project Step 3, we created a Python class called `CoffeeShopDAO` that uses SQL queries to access our eight database
+For Project Step 4, we created a Python class called `CoffeeShopDAO` that uses SQL queries to access our eight database
 tables. The class includes SELECT methods for all eight tables and INSERT, UPDATE and DELETE methods for the 
 `ItemIngredients` intersection table.
 We also created a Python test script to call these methods and check that they work correctly.
@@ -17,7 +17,7 @@ If the git repository is cloned, the following files are included:
 - `tests/database_test.py` – Tests the required database methods.
 - `CLI_OUT.txt` – Contains the actual command-line output from our tests.
 - `requirements.txt` – Lists the Python packages needed for the project.
-- `Group37_Step3_Draft.pdf` – Contains the updated project report, ERD, schema and sample data.
+- `Group37_Step4_Draft.pdf` – Contains the updated project report, ERD, schema and sample data.
 
 If the files are unzipped, the same files are individually available.
 
@@ -48,22 +48,34 @@ Install the required Python packages in the terminal by running:
 2. Open the project folder in VS Code.
 3. Open a new terminal.
 4. Create a separate database for testing:
-mysql -h 127.0.0.1 -u root -p -e "CREATE DATABASE IF NOT EXISTS cs340_coffee_shop;"
+
+`mysql -h 127.0.0.1 -u root -p -e "CREATE DATABASE IF NOT EXISTS cs340_coffee_shop;"`
+
 or if using MariaDB:
-mariadb -h 127.0.0.1 -u root -p -e "CREATE DATABASE IF NOT EXISTS cs340_coffee_shop;"
+
+`mariadb -h 127.0.0.1 -u root -p -e "CREATE DATABASE IF NOT EXISTS cs340_coffee_shop;"`
 
 
 5. Import the database tables and sample data:
 If cloned from the repository, run:
-mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DDL.sql
+
+`mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DDL.sql`
+`mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DML.sql`
+
 or if using MariaDB:
-mariadb -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DDL.sql
+
+`mariadb -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DDL.sql`
+`mariadb -h 127.0.0.1 -u root -p cs340_coffee_shop < sql/DML.sql`
 
 If unzipped, run:
-mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < DDL.sql
-or if using MariaDB:
-mariadb -h 127.0.0.1 -u root -p cs340_coffee_shop < DDL.sql
 
+`mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < DDL.sql`
+`mysql -h 127.0.0.1 -u root -p cs340_coffee_shop < plsql.sql`
+
+or if using MariaDB:
+
+`mariadb -h 127.0.0.1 -u root -p cs340_coffee_shop < DDL.sql`
+`mariadb -h 127.0.0.1 -u root -p cs340_coffee_shop < plsql.sql`
 
 Enter your MySQL password when prompted.
 **Note:** `DDL.sql` deletes and recreates the eight project tables. We recommend using a separate test database so 
@@ -72,10 +84,12 @@ existing data is not affected.
 ### Running the Application
 After setting up the database, run the test script 
 If the folder is cloned from the github repo run it from the main project folder:
-python tests/database_test.py
+
+`python tests/database_test.py`
 
 If the folder is unzipped, run database_test.py from the unzipped project folder:
-python database_test.py
+
+`python database_test.py`
 
 Enter your MySQL password when prompted.
 The script calls all eight SELECT methods and prints the records from each table. It also tests the CREATE, UPDATE and 
@@ -126,3 +140,5 @@ Other materials:
 - Oregon State University CS 340 course explorations and assignment instructions.
 - Our Group 37 Project Step 1 and Step 2 submissions.
 - The group's earlier Python code and SQL files.
+- Grammerly was not used in this ReadMe
+- AI was not used for code development, the work is our own.
